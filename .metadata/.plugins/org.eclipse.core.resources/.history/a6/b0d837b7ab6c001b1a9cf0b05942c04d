@@ -62,8 +62,6 @@ public class SellerDaoJDBC implements SellerDao {
 				obj.setBaseSalary(rs.getDouble("BaseSalary"));
 				obj.setBirthDate(rs.getDate("BirthDate"));
 				obj.setDepartment(dep);
-				
-				return obj;
 			}
 			
 			return null;
@@ -71,6 +69,7 @@ public class SellerDaoJDBC implements SellerDao {
 		} catch(SQLException e) {
 			throw new DbException(e.getMessage());
 		} finally {
+			DB.closeConnection();
 			DB.closeStatement(st);
 			DB.closeResultSet(rs);
 		}

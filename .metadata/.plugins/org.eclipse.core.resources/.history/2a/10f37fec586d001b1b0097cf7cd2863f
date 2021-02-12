@@ -18,19 +18,13 @@ public class Main2 {
 		
 		// System.out.println("Inserted! New id = " + dep.getId());
 		
-		System.out.println("\n === Test 2: department findById ===");
-		dep = departmentDao.findById(11);
+		System.out.println("\n === Test 2: department update ===");
 		
-		System.out.println(dep);
-		
-		System.out.println("\n === Test 3: department update ===");
-		dep = departmentDao.findById(11);
+		departmentDao.findById(11);
 		dep.setName("Music");
 		departmentDao.update(dep);
 		
 		System.out.println("Update completed");
-		
-		System.out.println("\n === Test 2: department update ===");
 		
 	}
 

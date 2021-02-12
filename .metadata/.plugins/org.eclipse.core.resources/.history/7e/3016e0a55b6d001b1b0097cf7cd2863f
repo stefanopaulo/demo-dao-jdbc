@@ -6,12 +6,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import db.DB;
 import db.DbException;
 import model.dao.DepartmentDao;
 import model.entities.Department;
+import model.entities.Seller;
 
 public class DepartmentDaoJDBC implements DepartmentDao {
 	private Connection conn;
@@ -130,16 +133,22 @@ public class DepartmentDaoJDBC implements DepartmentDao {
 		
 		try {
 			st = conn.prepareStatement(
-					"SELECT * FROM department ORDER BY Name");
+					"SELECT department.*, department.Name as DepName ORDER BY Name");
 			
 			rs = st.executeQuery();
 			
 			List<Department> list = new ArrayList<>();
-
+			Map<Integer, Department> map = new HashMap<>();
+			
 			while (rs.next()) {
-				Department dep = new Department();
-				dep.setId(rs.getInt("Id"));
-				dep.setName(rs.getString("Name"));
+				Department dep = map.get(rs.getInt("Id"));
+				
+				if (dep == null) {					
+					dep = new Department();
+					dep.setId(rs.getInt("Id"));
+					dep.setName(rs.getString("DepName"));
+					map.put(rs.getInt("DepartmentId"), dep);
+				}
 				
 				list.add(dep);
 			}

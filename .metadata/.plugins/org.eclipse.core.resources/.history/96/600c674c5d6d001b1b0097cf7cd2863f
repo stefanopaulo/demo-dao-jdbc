@@ -6,7 +6,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import db.DB;
 import db.DbException;
@@ -130,16 +132,14 @@ public class DepartmentDaoJDBC implements DepartmentDao {
 		
 		try {
 			st = conn.prepareStatement(
-					"SELECT * FROM department ORDER BY Name");
+					"SELECT department.*, department.Name as DepName FROM department ORDER BY Name");
 			
 			rs = st.executeQuery();
 			
 			List<Department> list = new ArrayList<>();
-
+			
 			while (rs.next()) {
-				Department dep = new Department();
-				dep.setId(rs.getInt("Id"));
-				dep.setName(rs.getString("Name"));
+				Department dep = new Department(rs.getInt("Id"), rs.getString("DepName"));
 				
 				list.add(dep);
 			}

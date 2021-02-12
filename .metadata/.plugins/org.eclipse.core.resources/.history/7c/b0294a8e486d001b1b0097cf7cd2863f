@@ -40,6 +40,7 @@ public class SellerDaoJDBC implements SellerDao {
 		ResultSet rs = null;
 		
 		try {
+			
 			st = conn.prepareStatement(
 					"SELECT seller.*, department.Name as DepName "
 					+ "FROM seller INNER JOIN department "
@@ -51,6 +52,7 @@ public class SellerDaoJDBC implements SellerDao {
 			
 			if (rs.next()) {
 				Department dep = instantiateDepartment(rs);
+				
 				Seller obj = instantiateSeller(rs, dep);
 				
 				return obj;

@@ -24,6 +24,12 @@ public class Demo {
             for (Seller seller : list) {
                 System.out.println(seller);
             }
+
+            List<Seller> listAll = dao.findAll();
+            System.out.println("\n=== Teste 3: seller findByAll ===");
+            for (Seller seller : listAll) {
+                System.out.println(seller);
+            }
         } catch (SQLException e) {
             throw new DbException(e.getMessage());
         }

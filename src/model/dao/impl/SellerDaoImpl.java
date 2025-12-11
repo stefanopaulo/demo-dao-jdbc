@@ -16,6 +16,7 @@ import java.util.Map;
 
 public class SellerDaoImpl implements SellerDao {
     private Connection conn;
+
     SellerDaoImpl(Connection conn) {
         this.conn = conn;
     }
@@ -46,7 +47,7 @@ public class SellerDaoImpl implements SellerDao {
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
 
-            try (ResultSet result = stmt.executeQuery()){
+            try (ResultSet result = stmt.executeQuery()) {
                 if (result.next()) {
                     Department department = instantiateDepartment(result);
                     return instantiateSeller(result, department);
@@ -61,7 +62,35 @@ public class SellerDaoImpl implements SellerDao {
 
     @Override
     public List<Seller> findAll() {
-        return List.of();
+        String sql = """
+                SELECT seller.*,department.Name as DepName
+                FROM seller INNER JOIN department
+                ON seller.DepartmentId = department.Id
+                ORDER BY Name
+                """;
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            try (ResultSet result = stmt.executeQuery()) {
+                List<Seller> list = new ArrayList<>();
+                Map<Integer, Department> map = new HashMap<>();
+
+                while (result.next()) {
+                    Department dep = map.get(result.getInt("DepartmentId"));
+
+                    if (dep == null) {
+                        dep = instantiateDepartment(result);
+                        map.put(result.getInt("DepartmentId"), dep);
+                    }
+
+                    Seller seller = instantiateSeller(result, dep);
+                    list.add(seller);
+                }
+
+                return list;
+            }
+        } catch (SQLException e) {
+            throw new DbException(e.getMessage());
+        }
     }
 
     @Override
@@ -74,10 +103,10 @@ public class SellerDaoImpl implements SellerDao {
                 ORDER BY Name
                 """;
 
-        try (PreparedStatement stmt = conn.prepareStatement(sql)){
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, department.getId());
 
-            try (ResultSet result = stmt.executeQuery()){
+            try (ResultSet result = stmt.executeQuery()) {
                 List<Seller> list = new ArrayList<>();
                 Map<Integer, Department> map = new HashMap<>();
 

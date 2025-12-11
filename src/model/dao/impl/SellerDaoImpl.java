@@ -28,11 +28,7 @@ public class SellerDaoImpl implements SellerDao {
                 """;
 
         try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
-            stmt.setString(1, seller.getName());
-            stmt.setString(2, seller.getEmail());
-            stmt.setDate(3, Date.valueOf(seller.getBirthDate()));
-            stmt.setDouble(4, seller.getBaseSalary());
-            stmt.setInt(5, seller.getDepartment().getId());
+            assembleStatement(seller, stmt);
 
             if (stmt.executeUpdate() > 0) {
                 try (ResultSet result = stmt.getGeneratedKeys()) {
@@ -51,7 +47,18 @@ public class SellerDaoImpl implements SellerDao {
 
     @Override
     public void update(Seller seller) {
-
+        String sql = """
+                UPDATE seller
+                SET Name = ?, Email = ?, BirthDate = ?, BaseSalary = ?, DepartmentId = ?
+                WHERE Id = ?
+                """;
+        try (PreparedStatement stmt = conn.prepareStatement(sql)){
+            assembleStatement(seller, stmt);
+            stmt.setInt(6, seller.getId());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new DbException(e.getMessage());
+        }
     }
 
     @Override
@@ -165,5 +172,13 @@ public class SellerDaoImpl implements SellerDao {
 
     private static Department instantiateDepartment(ResultSet result) throws SQLException {
         return new Department(result.getInt("DepartmentId"), result.getString("DepName"));
+    }
+
+    private static void assembleStatement(Seller seller, PreparedStatement stmt) throws SQLException {
+        stmt.setString(1, seller.getName());
+        stmt.setString(2, seller.getEmail());
+        stmt.setDate(3, Date.valueOf(seller.getBirthDate()));
+        stmt.setDouble(4, seller.getBaseSalary());
+        stmt.setInt(5, seller.getDepartment().getId());
     }
 }

@@ -36,6 +36,12 @@ public class Demo {
             Seller seller2 = new Seller(null, "Greg", "greg@gmail.com", LocalDate.parse("1991-02-12"), 4000.0, new Department(3, null));
             dao.insert(seller2);
             System.out.println("Vendedor inserido com sucesso! Id: " + seller2.getId());
+
+            System.out.println("\n=== Teste 5: seller update ===");
+            seller2 = dao.findById(1);
+            seller2.setName("Martha Waine");
+            dao.update(seller2);
+            System.out.println("Update concluído com sucesso!");
         } catch (SQLException e) {
             throw new DbException(e.getMessage());
         }

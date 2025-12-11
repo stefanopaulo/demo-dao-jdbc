@@ -9,6 +9,7 @@ import model.entities.Seller;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
 
 public class Demo {
@@ -30,6 +31,11 @@ public class Demo {
             for (Seller seller : listAll) {
                 System.out.println(seller);
             }
+
+            System.out.println("\n=== Teste 4: seller insert ===");
+            Seller seller2 = new Seller(null, "Greg", "greg@gmail.com", LocalDate.parse("1991-02-12"), 4000.0, new Department(3, null));
+            dao.insert(seller2);
+            System.out.println("Vendedor inserido com sucesso! Id: " + seller2.getId());
         } catch (SQLException e) {
             throw new DbException(e.getMessage());
         }

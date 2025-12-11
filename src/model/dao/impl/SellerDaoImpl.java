@@ -5,10 +5,7 @@ import model.dao.SellerDao;
 import model.entities.Department;
 import model.entities.Seller;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,7 +20,33 @@ public class SellerDaoImpl implements SellerDao {
 
     @Override
     public void insert(Seller seller) {
+        String sql = """
+                INSERT INTO seller
+                (Name, Email, BirthDate, BaseSalary, DepartmentId)
+                VALUES
+                (?, ?, ?, ?, ?)
+                """;
 
+        try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
+            stmt.setString(1, seller.getName());
+            stmt.setString(2, seller.getEmail());
+            stmt.setDate(3, Date.valueOf(seller.getBirthDate()));
+            stmt.setDouble(4, seller.getBaseSalary());
+            stmt.setInt(5, seller.getDepartment().getId());
+
+            if (stmt.executeUpdate() > 0) {
+                try (ResultSet result = stmt.getGeneratedKeys()) {
+                    if (result.next()) {
+                        int id = result.getInt(1);
+                        seller.setId(id);
+                    }
+                }
+            } else {
+                throw new DbException("Unexpected error! No rows affected!");
+            }
+        } catch (SQLException e) {
+            throw new DbException(e.getMessage());
+        }
     }
 
     @Override

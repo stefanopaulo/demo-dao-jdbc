@@ -63,7 +63,23 @@ public class SellerDaoImpl implements SellerDao {
 
     @Override
     public void deleteById(Integer id) {
+        String sql = """
+                DELETE FROM seller
+                WHERE Id = ?
+                """;
 
+        try (PreparedStatement stmt = conn.prepareStatement(sql)){
+            Seller seller = findById(id);
+
+            if (seller == null) {
+                throw new DbException("Unexpected error! No records found!");
+            }
+
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new DbException(e.getMessage());
+        }
     }
 
     @Override

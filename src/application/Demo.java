@@ -42,6 +42,10 @@ public class Demo {
             seller2.setName("Martha Waine");
             dao.update(seller2);
             System.out.println("Update concluído com sucesso!");
+
+            System.out.println("\n=== Teste 6: seller delete ===");
+            dao.deleteById(16);
+            System.out.println("Delete concluído sem problemas.");
         } catch (SQLException e) {
             throw new DbException(e.getMessage());
         }

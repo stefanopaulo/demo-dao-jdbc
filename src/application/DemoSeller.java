@@ -12,7 +12,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
-public class Demo {
+public class DemoSeller {
     public static void main(String[] args) {
         try (Connection conn = DB.getConnection()) {
             SellerDao dao = DaoFactory.createSellerDao(conn);
